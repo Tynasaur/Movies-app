@@ -52,7 +52,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to my movie club!');
 });
 
-app.use('/documentation.html', express.static('public'));
+app.use(express.static('public'));
 
 app.get('/movies', (req, res) => {
   res.json(topMovies);
@@ -60,7 +60,7 @@ app.get('/movies', (req, res) => {
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('What did you do now?');
+  res.status(500).send('what did you do now?');
 });
 
 
