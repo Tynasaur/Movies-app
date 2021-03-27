@@ -33,28 +33,28 @@
                 </tr>
                 <tr>
                     <td>Return a list of ALL movies</td>
-                    <td>/movies:Title</td>
+                    <td>/movies</td>
                     <td>GET</td>
                     <td>None</td>
                     <td>A JSON object holding data about movies</td>
                 </tr>
                 <tr>
                     <td>Return data (description, genre, director, image URL, whether it’s featured or not) about a single movie by title to the user</td>
-                    <td>/movies/[Description]:Title</td>
+                    <td>/movies/[Title]</td>
                     <td>GET</td>
                     <td>None</td>
                     <td>A JSON object holding the description, genre, director, image URL, whether it’s featured or not of a movie</td>
                 </tr>
                 <tr>
                     <td>Return data about a genre (description) by name/title (e.g., “Thriller”)</td>
-                    <td>/movies[Genre]:Title</td>
+                    <td>/movies[Title]/Genre</td>
                     <td>GET</td>
                     <td>None</td>
-                    <td>A JSON object holding the genre of the movie</td>
+                    <td>A JSON obect holding the genre of the movie</td>
                 </tr>
                 <tr>
                     <td>Return data about a director (bio, birth year, death year) by name</td>
-                    <td>/movies[Director]:Title</td>
+                    <td>/movies[Title]/Director</td>
                     <td>GET</td>
                     <td>None</td>
                     <td>A JSON holding the director of a movie by name</td>
@@ -63,29 +63,46 @@
                     <td>Allow new users to register</td>
                     <td>/users</td>
                     <td>POST</td>
-                    <td></td>
-                    <td></td>
+                    <td>A JSON object holding data about the new user,
+                     structured like:
+                    {
+                        name: 'Johnny'
+                        username: '[JohnnyRocks]'
+                        password: '[password]',
+                        firstName: '[firstName]',
+                        lastName: '[lastName]'     
+                    } 
+                    </td>
+                    <td>A JSON object holding data about the user that was added, including username
+                    {
+                        name: 'Johnny'
+                        username: '[JohnnyRocks]'
+                        password: '[password]',
+                        firstName: '[firstName]',
+                        lastName: '[lastName]'     
+                    } 
+                    </td>
                 </tr>
                 <tr>
-                    <td>Allow users to add a movie to their list of favorites (showing only a text that a movie has been added—more on this later)</td>
-                    <td>/movies[Favorites]:Tilte</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>  
+                    <td>Allow users to add a movie to their list of favorites (showing only a text that a movie has been added)</td>
+                    <td>/users</td>
+                    <td>PUT</td>
+                    <td>None</td>
+                    <td>A text message indicating movie was added to their favorites list</td>  
                 </tr>
                 <tr>
                     <td>Allow users to remove a movie from their list of favorites (showing only a text that a movie has been removed—more on this later)</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>  
+                    <td>/users</td>
+                    <td>DELETE</td>
+                    <td>None</td>
+                    <td>A text message indicating movie was succesfully removed from list of favorites</td>  
                 </tr>
                 <tr>
-                    <td>Allow existing users to deregister (showing only a text that a user email has been removed—more on this later)</td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>  
+                    <td>Allow existing users to deregister (showing only a text that a user email has been removed)</td>
+                    <td>/users</td>
+                    <td>DELETE</td>
+                    <td>None</td>
+                    <td>A text message indicating user was deregistered</td>  
                 </tr>
             </table>
         </div>
