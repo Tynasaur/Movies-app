@@ -2,133 +2,200 @@ const express = require('express'),
 morgan = require('morgan'),
 uuid = require('uuid');
 
+
+//mongoose 
+const mongoose = require('mongoose');
+const Models = require('./models.js');
+const bodyParser = require('body-parser');
 const app = express();
 
-app.use(morgan('common'));
+const Movies = Models.Movie;
+const Directors = Models.Directors;
+const Genres = Models.Genre;
+const Users = Models.User;
 
-let topMovies = [
-  {
-    'title': 'Howl\'s Moving Castle',
-    'director': 'Hayo Miyazaki',
-    'genre': 'animation',
-    'description': '...1',
-    'img': 'www.image.com'
-  },
-  {
-    'title': 'The Fifth Element',
-    'director': 'Luc Besson',
-    'genre': 'sci-fi',
-    'description': '...2',
-    'img': 'www.image.com'
-  },
-  {
-    'title': 'Galaxy Quest',
-    'director': 'Dean Parisot',
-    'genre': 'sci-fi, comedy',
-    'description': '...3',
-    'img': 'www.image.com'
-  },
-  {
-    'title': 'Star Wars: Return of the Jedi',
-    'director': 'Richard Marquand',
-    'genre': 'sci-fi',
-    'description': '...4',
-    'img': 'www.image.com'
-  },
-  {
-    'title': 'Inglorious Basterds',
-    'director': 'Quentin Tarantino',
-    'genre': 'drama',
-    'description': '...5',
-    'img': 'www.image.com'
-  },  
-  {
-    'title': 'Aliens',
-    'director': 'Ridley Scott',
-    'genre': 'sci-fi',
-    'description': '...6',
-    'img': 'www.image.com'
-  },
-  {
-    'title': 'Heathers',
-    'director': 'Michael Lehman',
-    'genre': 'dark comedy',
-    'description':'...7',
-    'img': 'www.image.com'
-  },  
-  {
-    'title': 'Interstellar',
-    'director': 'Chistopher Nolan',
-    'genre': 'dark comedy',
-    'description':'...8',
-    'img': 'www.image.com'
-  },
-  {
-    'title': 'Kill Bill',
-    'director': 'Quentin Tarantino',
-    'genre': 'action',
-    'description':'...9',
-    'img': 'www.image.com'
-  },  
-  {
-    'title': 'Gone With the Wind',
-    'director': 'Victor Fleming',
-    'genre': 'drama',
-    'description':'...10',
-    'img': 'www.image.com'
-  }
-];
+
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+
+app.use(bodyParser.json());
+app.use(morgan('common'));
+app.use(express.static('public'));
+
+
 
 // GET requests
 app.get('/', (req, res) => {
   res.send('Welcome to my movie club!');
 });
 
-app.use(express.static('public'));
 
-
-// GETs request movies
-app.get('/movies', (req, res) => {
-  res.send('Succesful GET request returning list of all movies');
-});
-
-app.get('/movies/:title', (req, res) => {
-  res.send('Successful GET request returning description');
-});
 
 app.get('/movies/:title/genre', (req, res) => {
   res.send('Successful GET request returning genre');
 });
 
+
 app.get('/movies/:title/director', (req, res) => {
   res.send('Successful GET request returning director\'s name');
 });
 
+
+//GET request for all movies
+app.get('/movies', (req, res) => {
+  Movies.find()
+    .then((movies) => {
+      res.status(201).json(movies);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+
+//GET request for a single movie by name
+app.get('/movies/:Title', (req, res) => {
+  Movies.findOne({ Title: req.params.Title })
+    .then((movie) => {
+      res.json(movie);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
+
+
+
+
+
+//not working help please
 //POST request to add new users
-app.post('/users', (req, res) =>{
-  res.send('Succesful POST request new user was added');
-}); 
-
-//PUT request for users to update their username
-app.put('/users', (req, res) => {
-  res.send('Successful PUT request username updated');
+app.post('/users', (req, res) => {
+  Users.findOne({ Username: req.body.Username })
+    .then((user) => {
+      if (user) {
+        return res.status(400).send(req.body.Username + 'already exists');
+      } else {
+        Users.create({
+            Username: req.body.Username,
+            Password: req.body.Password,
+            Email: req.body.Email,
+            Birthday: req.body.Birthday
+          })
+          .then((user) =>{res.status(201).json(user) })
+        .catch((error) => {
+          console.error(error);
+          res.status(500).send('Error: ' + error);
+        })
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+      res.status(500).send('Error: ' + error);
+    });
 });
 
-//POST requests adds movie to favorites list
-app.post('/movies', (req, res) =>{
-  res.send('Successful POST request favorites list created');
+
+
+// GET all users
+app.get('/users', (req, res) => {
+  Users.find()
+    .then((users) => {
+      res.status(201).json(users);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 
-//DELETE request to remove movies followed by user
-app.delete('/movies', (req, res) => {
-  res.send('Successful DELETE request movie was removed from favorites list')
+//GET a single user by username
+app.get('/users/:Username', (req, res) => {
+  Users.findOne({ Username: req.params.Username })
+    .then((user) => {
+      res.json(user);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
-app.delete('/users', (req, res) =>{
-  res.send('Successful DELETE request user has been removed');
+//notworking
+//PUT Update a user's info, by username
+app.put('/users/:Username', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username },
+   { 
+     $set: {
+      Username: req.body.Username,
+      Password: req.body.Password,
+      Email: req.body.Email,
+      Birthday: req.body.Birthday
+    }
+  },
+  { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if(err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
 });
 
+
+
+//POST method to add a movie to a user's list of favorites
+app.post('/users/:Username/movies/:Title', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+     $push: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
+//POST request to remove movie from users favorite list
+app.post('/users/:Username/movies/:title', (req, res) => {
+  Users.findOneAndUpdate({ Username: req.params.Username }, {
+     $pull: { FavoriteMovies: req.params.MovieID }
+   },
+   { new: true }, // This line makes sure that the updated document is returned
+  (err, updatedUser) => {
+    if (err) {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    } else {
+      res.json(updatedUser);
+    }
+  });
+});
+
+
+// Delete a user by username
+app.delete('/users/:Username', (req, res) => {
+  Users.findOneAndRemove({ Username: req.params.Username })
+    .then((user) => {
+      if (!user) {
+        res.status(400).send(req.params.Username + ' was not found');
+      } else {
+        res.status(200).send(req.params.Username + ' was deleted.');
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
+});
 
 
 
@@ -142,15 +209,3 @@ app.listen(8080, () => {
   console.log('Your app is listening on port 8080.');
 });
 
-
-
-// let newUser = req.body;
-// if (!newUSer.username) {
-//   const message = 'Missing username';
-//   res.status(400).send(message);
-// } else {
-//   newUser = uuid.v4();
-//   users.push(newUser);
-//   res.status(201).send(newUser);
-//   }
-// });
