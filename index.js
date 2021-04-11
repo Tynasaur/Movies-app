@@ -10,7 +10,7 @@ const bodyParser = require('body-parser');
 const app = express();
 
 const Movies = Models.Movie;
-const Directors = Models.Directors;
+const Directors = Models.Director;
 const Genres = Models.Genre;
 const Users = Models.User;
 
@@ -22,22 +22,37 @@ app.use(morgan('common'));
 app.use(express.static('public'));
 
 
-
-// GET requests
 app.get('/', (req, res) => {
   res.send('Welcome to my movie club!');
 });
 
 
-
-app.get('/movies/:title/genre', (req, res) => {
-  res.send('Successful GET request returning genre');
+//requests related to movies
+//GET request for genres
+app.get('/genres', (req, res) => {
+  Genres.find()
+    .then((genres) => {
+      res.status(201).json(genres);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
 
 
-app.get('/movies/:title/director', (req, res) => {
-  res.send('Successful GET request returning director\'s name');
+//GET request for directors
+app.get('/directors', (req, res) => {
+  Directors.find()
+    .then((directors) => {
+      res.status(201).json(directors);
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
+    });
 });
+
 
 
 //GET request for all movies
@@ -51,6 +66,7 @@ app.get('/movies', (req, res) => {
       res.status(500).send('Error: ' + err);
     });
 });
+
 
 
 //GET request for a single movie by name
@@ -67,9 +83,7 @@ app.get('/movies/:Title', (req, res) => {
 
 
 
-
-
-//not working help please
+//request for users
 //POST request to add new users
 app.post('/users', (req, res) => {
   Users.findOne({ Username: req.body.Username })
@@ -110,7 +124,6 @@ app.get('/users', (req, res) => {
     });
 });
 
-
 //GET a single user by username
 app.get('/users/:Username', (req, res) => {
   Users.findOne({ Username: req.params.Username })
@@ -123,7 +136,6 @@ app.get('/users/:Username', (req, res) => {
     });
 });
 
-//notworking
 //PUT Update a user's info, by username
 app.put('/users/:Username', (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username },
@@ -146,10 +158,8 @@ app.put('/users/:Username', (req, res) => {
   });
 });
 
-
-
 //POST method to add a movie to a user's list of favorites
-app.post('/users/:Username/movies/:Title', (req, res) => {
+app.post('/users/:Username/movies/:MovieID', (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
      $push: { FavoriteMovies: req.params.MovieID }
    },
@@ -164,8 +174,8 @@ app.post('/users/:Username/movies/:Title', (req, res) => {
   });
 });
 
-//POST request to remove movie from users favorite list
-app.post('/users/:Username/movies/:title', (req, res) => {
+//DELETE request to remove movie from users favorite list
+app.delete('/users/:Username/movies/:MovieID', (req, res) => {
   Users.findOneAndUpdate({ Username: req.params.Username }, {
      $pull: { FavoriteMovies: req.params.MovieID }
    },
@@ -179,7 +189,6 @@ app.post('/users/:Username/movies/:title', (req, res) => {
     }
   });
 });
-
 
 // Delete a user by username
 app.delete('/users/:Username', (req, res) => {
