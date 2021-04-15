@@ -82,7 +82,7 @@ Genres.findOne({ Name: req.params.Name})
 });
 
 //GET request for directors
-app.get('/directors', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/directors', passport.authenticate('jwt', { session: false }) , (req, res) => {
   Directors.find()
     .then((directors) => {
       res.status(201).json(directors);
@@ -94,7 +94,7 @@ app.get('/directors', passport.authenticate('jwt', { session: false }), (req, re
 });
 
 //GET request for director by name
-app.get('/directors/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/directors/:Name', passport.authenticate('jwt', { session: false }),  (req, res) => {
   Directors.findOne({ Name: req.params.Name})
     .then((directors) => {
       res.status(201).json(directors);
@@ -114,7 +114,8 @@ app.post('/users', (req, res) => {
       if (user) {
         return res.status(400).send(req.body.Username + 'already exists');
       } else {
-        Users.create({
+        Users
+          .create({
             Username: req.body.Username,
             Password: req.body.Password,
             Email: req.body.Email,
