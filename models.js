@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-
+const bscrypt = require('bscrypt');
 
 let movieSchema = mongoose.Schema({
     Title: {type: String, required: true},
@@ -10,7 +10,6 @@ let movieSchema = mongoose.Schema({
     Featured: Boolean
 });
 
-
 let userSchema = mongoose.Schema({
     Username: {type: String, required: true},
     Password: {type: String, required: true},
@@ -19,20 +18,26 @@ let userSchema = mongoose.Schema({
     FavoriteMovies: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Movie' }]
   });
 
+userSchema.statics.hashPassword = (password) => {
+    return bscrypt.hashSync(password, 10);
+};
+
+userSchema.methods.validatePassword = function(password) {
+    return bscrypt.compareSync(password, this.Password);
+};
+
 
 let directorSchema = mongoose.Schema({
     Name: {type: String, required: true},
     Bio: {type: String, required: true},
     Birthday: {type: String, required: true},
     Deathdate: String
-
 });
 
 let genreSchema = mongoose.Schema({
     Name: {type: String, required: true},
     Description: {type: String, required: true},
 });
-
 
 
 //export models in order to then import them into index.js
