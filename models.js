@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bscrypt = require('bscrypt'); //to hash passwords
+const bcrypt = require('bcrypt'); //to hash passwords
 
 let movieSchema = mongoose.Schema({
     Title: {type: String, required: true},
@@ -19,11 +19,11 @@ let userSchema = mongoose.Schema({
   });
 
 userSchema.statics.hashPassword = (password) => {
-    return bscrypt.hashSync(password, 10);
+    return bcrypt.hashSync(password, 10);
 };
 
 userSchema.methods.validatePassword = function(password) {
-    return bscrypt.compareSync(password, this.Password);
+    return bcrypt.compareSync(password, this.Password);
 };
 
 
