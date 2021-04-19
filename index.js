@@ -1,9 +1,8 @@
 const express = require('express'),
 morgan = require('morgan'),
 uuid = require('uuid');
-const cors = require('cors');
-const { check, validationResult } = require('express-validator');
 
+const { check, validationResult } = require('express-validator');
 //mongoose 
 const mongoose = require('mongoose');
 const Models = require('./models.js');
@@ -18,8 +17,8 @@ const Directors = Models.Director;
 const Genres = Models.Genre;
 const Users = Models.User;
 
-
-mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('process.env.CONNECTION_URI', { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(bodyParser.json());
 app.use(morgan('common'));
@@ -29,21 +28,25 @@ let auth = require('./auth')(app);
 
 
 app.get('/', (req, res) => {
-  res.send('Welcome to my movie club!');
+  res.send('Welcome to my myFlix!');
 });
 
-let allowedOrigins = ['http://localhost8080', 'http://testsite.com'];
+let allowedOrigins = ['http://localhost8080', 'https://thainas-myflix.herokuapp.com/', 'http://testsite.com'];
 
+const cors = require('cors');
 app.use(cors({
   origin: (origin, callback) => {
     if(!origin) return callback(null, true);
     if(allowedOrigins.indexOf(origin) === -1){ //if a specific origin isnt't found on the list allowed origins
-        let message = 'The CORS policy for this application doesn\'t allow acces from origin' + origin;
+        let message = 'The CORS policy for this application doesn’t allow acces from origin' + origin;
         return callback(new Error(message ), false);
     }
     return callback(null, true);
   }
 }));
+
+
+
 
 
 //requests related to movies
@@ -152,7 +155,7 @@ app.post('/users',
               Birthday: req.body.Birthday
             })
             .then((user) =>{res.status(201).json(user) })
-          .catch((error) => {
+           .catch((error) => {
             console.error(error);
             res.status(500).send('Error: ' + error);
           })
@@ -287,4 +290,9 @@ const port = process.env.PORT || 8080;
 app.listen(port, '0.0.0.0',() => {
  console.log('Listening on Port ' + port);
 });
+
+
+
+
+// mongoimport --uri mongodb+srv://myFlixAdmin:M15terLawl1et@cluster0.0l8uc.mongodb.net/myFlixDB --collection movies --type json --file ../exported_collections/movies.json
 

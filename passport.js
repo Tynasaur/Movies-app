@@ -35,7 +35,7 @@ passport.use(new LocalStrategy({
   });
 }));
 
-
+//extracts JWT from header of HTTP request
 passport.use(new JWTStrategy({
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
   secretOrKey: 'your_jwt_secret'

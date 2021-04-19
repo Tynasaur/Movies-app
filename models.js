@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const bscrypt = require('bscrypt');
+const bscrypt = require('bscrypt'); //to hash passwords
 
 let movieSchema = mongoose.Schema({
     Title: {type: String, required: true},
@@ -46,7 +46,7 @@ let Director = mongoose.model('Director', directorSchema);
 let Genre = mongoose.model('Genre', genreSchema);
 let User = mongoose.model('User', userSchema);
 
-//exposrt the modules
+//export the modules
 module.exports.Movie = Movie;
 module.exports.Director = Director;
 module.exports.Genre = Genre;
