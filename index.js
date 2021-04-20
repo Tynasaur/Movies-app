@@ -184,9 +184,9 @@ if (!errors.isEmpty()) {
   return res.status(422).json({ errors: errors.array() });
 }
 
+   let hashedPassword = Users.hashPassword(req.body.Password);
    Users.findOneAndUpdate({ Username: req.params.Username }, 
-    { 
-     $set: {
+    { $set: {
       Username: req.body.Username,
       Password: req.hashedPassword,
       Email: req.body.Email,
