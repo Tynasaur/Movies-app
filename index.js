@@ -168,7 +168,7 @@ app.post('/users',
 
 
 
-//PUT Update a user's info, by username
+// PUT Update a user's info, by username
 app.put('/users/:Username', 
 [
   check('Username', 'Username is required').isLength({min:6}),
@@ -184,11 +184,11 @@ if (!errors.isEmpty()) {
   return res.status(422).json({ errors: errors.array() });
 }
 
-   let hashedPassword = Users.hashPassword(req.body.Password);
+  let hashedPassword = Users.hashPassword(req.body.Password);
    Users.findOneAndUpdate({ Username: req.params.Username }, 
     { $set: {
       Username: req.body.Username,
-      Password: req.hashedPassword,
+      Password: hashedPassword,
       Email: req.body.Email,
       Birthday: req.body.Birthday
     }
