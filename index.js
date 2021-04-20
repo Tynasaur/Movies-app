@@ -167,14 +167,15 @@ app.post('/users',
   });
 
 
+
 //PUT Update a user's info, by username
 app.put('/users/:Username', 
 [
-  check('Username', 'Username is required').isLength({min: 6}),
-  check('Username', 'Username has characters that are not allowed').isAlphanumeric(),
+  check('Username', 'Username is required').isLength({min:6}),
+  check('Username', 'Username contains characters not allowed.').isAlphanumeric(),
   check('Password', 'Password is required').not().isEmpty(),
   check('Email', 'Email is not valid').isEmail()
-], (req, res) => {
+  ], (req, res) => {
 
 // check the validation object for errors
 let errors = validationResult(req);
