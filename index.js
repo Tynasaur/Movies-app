@@ -28,10 +28,10 @@ let auth = require('./auth')(app);
 
 
 app.get('/', (req, res) => {
-  res.send('Welcome to my myFlix!');
+  res.send('Welcome to myFlix!');
 });
 
-let allowedOrigins = ['http://localhost8080', 'http://testsite.com'];
+let allowedOrigins = ['http://localhost:8080', 'http://localhost:1234'];
 
 const cors = require('cors');
 app.use(cors({
@@ -48,13 +48,12 @@ app.use(cors({
 
 
 
-
 //requests related to movies
 //GET request for all movies
 app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.find()
     .then((movies) => {
-      res.status(201).json(movies);
+      res.status(200).json(movies);
     })
     .catch((err) => {
       console.error(err);
@@ -78,7 +77,7 @@ app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req
 app.get('/genres', passport.authenticate('jwt', { session: false }), (req, res) => {
   Genres.find()
     .then((genres) => {
-      res.status(201).json(genres);
+      res.status(200).json(genres);
     })
     .catch((err) => {
       console.error(err);
@@ -90,7 +89,7 @@ app.get('/genres', passport.authenticate('jwt', { session: false }), (req, res) 
 app.get('/genres/:Name', passport.authenticate('jwt', { session: false }), (req, res) => {
 Genres.findOne({ Name: req.params.Name})
     .then((genres) => {
-      res.status(201).json(genres);
+      res.status(200).json(genres);
     })
     .catch((err) => {
       console.error(err);
@@ -102,7 +101,7 @@ Genres.findOne({ Name: req.params.Name})
 app.get('/directors', passport.authenticate('jwt', { session: false }) , (req, res) => {
   Directors.find()
     .then((directors) => {
-      res.status(201).json(directors);
+      res.status(200).json(directors);
     })
     .catch((err) => {
       console.error(err);
@@ -114,7 +113,7 @@ app.get('/directors', passport.authenticate('jwt', { session: false }) , (req, r
 app.get('/directors/:Name', passport.authenticate('jwt', { session: false }),  (req, res) => {
   Directors.findOne({ Name: req.params.Name})
     .then((directors) => {
-      res.status(201).json(directors);
+      res.status(200).json(directors);
     })
     .catch((err) => {
       console.error(err);
@@ -184,8 +183,7 @@ if (!errors.isEmpty()) {
   return res.status(422).json({ errors: errors.array() });
 }
 
-  let hashedPassword = Users.hashedPassword(req.body.Password);
-  Users.findOneAndUpdate({ Username: req.params.Username }, 
+   Users.findOneAndUpdate({ Username: req.params.Username }, 
     { 
      $set: {
       Username: req.body.Username,
@@ -211,7 +209,7 @@ if (!errors.isEmpty()) {
 app.get('/users', (req, res) => {
   Users.find()
     .then((users) => {
-      res.status(201).json(users);
+      res.status(200).json(users);
     })
     .catch((err) => {
       console.error(err);
@@ -282,7 +280,7 @@ app.delete('/users/:Username', passport.authenticate('jwt', { session: false }),
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).send('what did you do now?');
+  res.status(500).send('Error not caught');
 });
 
 // listen for requests
@@ -294,5 +292,4 @@ app.listen(port, '0.0.0.0',() => {
 
 
 
-// mongoimport --uri mongodb+srv://myFlixAdmin:M15terLawl1et@cluster0.0l8uc.mongodb.net/myFlixDB --collection movies --type json --file ../exported_collections/movies.json
 
