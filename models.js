@@ -4,8 +4,8 @@ const bcrypt = require('bcrypt'); //to hash passwords
 let movieSchema = mongoose.Schema({
     Title: {type: String, required: true},
     Description: {type: String, required: true},
-    Genre: Number,
-    Director: Number,
+    Genre: { type: mongoose.Schema.Types.ObjectId, ref: 'Genre' },
+    Director: { type: mongoose.Schema.Types.ObjectId, ref: 'Director' }, //populate
     ImagePath: String,
     Featured: Boolean
 });

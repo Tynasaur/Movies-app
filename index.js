@@ -1,15 +1,16 @@
 const express = require('express'),
-morgan = require('morgan'),
-uuid = require('uuid');
+  morgan = require('morgan'),
+  uuid = require('uuid');
 
 const { check, validationResult } = require('express-validator');
 //mongoose 
+const cors = require('cors');
 const mongoose = require('mongoose');
-const Models = require('./models.js');
 const bodyParser = require('body-parser');
-const app = express();
-
 const passport = require('passport');
+
+const Models = require('./models.js');
+const app = express();
 require('./passport');
 
 const Movies = Models.Movie;
@@ -24,8 +25,6 @@ app.use(bodyParser.json());
 app.use(morgan('common'));
 app.use(express.static('public'));
 
-let auth = require('./auth')(app);
-
 
 app.get('/', (req, res) => {
   res.send('Welcome to myFlix!');
@@ -33,7 +32,7 @@ app.get('/', (req, res) => {
 
 let allowedOrigins = ['http://localhost:8080', 'http://localhost:1234'];
 
-const cors = require('cors');
+
 app.use(cors({
   origin: (origin, callback) => {
     if(!origin) return callback(null, true);
@@ -166,14 +165,12 @@ app.post('/users',
       });
   });
 
-
-
 // PUT Update a user's info, by username
 app.put('/users/:Username', 
 [
   check('Username', 'Username is required').isLength({min:6}),
   check('Username', 'Username contains characters not allowed.').isAlphanumeric(),
-  check('Password', 'Password is required').not().isEmpty(),
+  check('Password', 'Password is required').not().isEmpty(), //not necessary check what wa supdated and the set it
   check('Email', 'Email is not valid').isEmail()
   ], (req, res) => {
 
@@ -188,7 +185,7 @@ if (!errors.isEmpty()) {
    Users.findOneAndUpdate({ Username: req.params.Username }, 
     { $set: {
       Username: req.body.Username,
-      Password: hashedPassword,
+      Password: hashedPassword, //only set what needs to be
       Email: req.body.Email,
       Birthday: req.body.Birthday
     }
