@@ -49,14 +49,14 @@ app.use(cors({
 
 //requests related to movies
 //GET request for all movies
-app.get('/movies', /*passport.authenticate('jwt', { session: false }),*/ (req, res) => {
+app.get('/movies', function (req, res) {
   Movies.find()
-    .then((movies) => {
-      res.status(200).json(movies);
+    .then(function (movies) {
+      res.status(201).json(movies);
     })
-    .catch((err) => {
-      console.error(err);
-      res.status(500).send('Error: ' + err);
+    .catch(function (error) {
+      console.error(error);
+      res.status(500).send("Error: " + error);
     });
 });
 
