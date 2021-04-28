@@ -8,11 +8,11 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
-require('./auth')(app);
 
 const Models = require('./models.js');
 const app = express();
 require('./passport');
+require('./auth')(app);
 
 const Movies = Models.Movie;
 const Directors = Models.Director;
