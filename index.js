@@ -8,6 +8,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+require('./auth')(app);
 
 const Models = require('./models.js');
 const app = express();
@@ -49,7 +50,7 @@ app.use(cors({
 
 //requests related to movies
 //GET request for all movies
-app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/movies', /*passport.authenticate('jwt',*/ { session: false }), (req, res) => {
   Movies.find()
     .then((movies) => {
       res.status(200).json(movies);
