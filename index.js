@@ -49,14 +49,14 @@ app.use(cors({
 
 //requests related to movies
 //GET request for all movies
-app.get('/movies', function (req, res) {
+app.get('/movies', (req, res) => {
   Movies.find()
-    .then(function (movies) {
-      res.status(201).json(movies);
+    .then((movies) => {
+      res.status(200).json(movies);
     })
-    .catch(function (error) {
-      console.error(error);
-      res.status(500).send("Error: " + error);
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send('Error: ' + err);
     });
 });
 
