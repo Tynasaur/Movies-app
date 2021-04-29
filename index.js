@@ -50,7 +50,7 @@ app.use(cors({
 
 //requests related to movies
 //GET request for all movies
-app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/movies', (req, res) => {
   Movies.find()
     .then((movies) => {
       res.status(200).json(movies);
@@ -167,7 +167,7 @@ app.post('/users',
   });
 
 // PUT Update a user's info, by username
-app.put('/users/:Username', 
+app.put('/users/:Username',  passport.authenticate('jwt', { session: false }),
 [
   check('Username', 'Username is required').isLength({min:6}),
   check('Username', 'Username contains characters not allowed.').isAlphanumeric(),
@@ -205,7 +205,7 @@ if (!errors.isEmpty()) {
 
 
 // GET all users
-app.get('/users', (req, res) => {
+app.get('/users',  passport.authenticate('jwt', { session: false }), (req, res) => {
   Users.find()
     .then((users) => {
       res.status(200).json(users);
