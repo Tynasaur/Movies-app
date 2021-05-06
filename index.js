@@ -19,7 +19,7 @@ const Directors = Models.Director;
 const Genres = Models.Genre;
 const Users = Models.User;
 
-// mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+ mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
 app.use(bodyParser.json());
@@ -50,7 +50,7 @@ app.use(cors({
 
 //requests related to movies
 //GET request for all movies
-app.get('/movies', (req, res) => {
+app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.find()
     .then((movies) => {
       res.status(200).json(movies);
@@ -63,9 +63,17 @@ app.get('/movies', (req, res) => {
 
 //GET request for a single movie by name
 app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Movies.findOne({ Title: req.params.Title })
-    .then((movie) => {
-      res.json(movie);
+  Movies.findOne({ Title: req.params.Title }),({_id: directorId }),({_id: genreId })
+    .then((movies) => {
+      res.json(movies);
+    })
+    .populate('directors')
+    .then(movies => {
+      res.json(movies);
+    })
+    .populate('genres')
+    .then(movies => {
+      res.json(movies);
     })
     .catch((err) => {
       console.error(err);
