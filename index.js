@@ -12,7 +12,7 @@ const passport = require('passport');
 const Models = require('./models.js');
 const app = express();
 require('./passport');
-require('./auth')(app);
+
 
 const Movies = Models.Movie;
 const Directors = Models.Director;
@@ -22,22 +22,18 @@ const Users = Models.User;
 // mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
 
-
 app.use(bodyParser.json());
 app.use(morgan('common'));
 app.use(express.static('public'));
 
 
-app.get('/', (req, res) => {
-  res.send('Welcome to myFlix!');
-});
 
-let allowedOrigins = ['http://localhost:1234'];
+let allowedOrigins = ['http://localhost:8080', 'http://localhost:1234'];
+
 
 app.use(cors({
   origin: (origin, callback) => {
     if(!origin) return callback(null, true);
-    
     if(allowedOrigins.indexOf(origin) === -1){ //if a specific origin isnt't found on the list allowed origins
         let message = 'The CORS policy for this application doesn’t allow acces from origin' + origin;
         return callback(new Error(message ), false);
@@ -45,12 +41,15 @@ app.use(cors({
     return callback(null, true);
   }
 }));
+require('./auth')(app);
 
-
+app.get('/', (req, res) => {
+  res.send('Welcome to myFlix!');
+});
 
 //requests related to movies
 //GET request for all movies
-app.get('/movies', passport.authenticate('jwt', { session: false }), (req, res) => {
+app.get('/movies', (req, res) => {
   Movies.find()
     .then((movies) => {
       res.status(200).json(movies);
