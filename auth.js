@@ -1,4 +1,4 @@
-const jwtSecret = 1234/*process.env.JWT_TOKEN;*/ //This has to be the same key used in the JWTSrategy
+const jwtSecret = process.env.JWT_TOKEN; //This has to be the same key used in the JWTSrategy
 
 const jwt = require('jsonwebtoken'),
     passport = require('passport');
