@@ -19,8 +19,21 @@ const Directors = Models.Director;
 const Genres = Models.Genre;
 const Users = Models.User;
 
- mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
-mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect('mongodb://localhost:27017/myFlixDB', { useNewUrlParser: true, useUnifiedTopology: true });
+// mongoose.connect(process.env.CONNECTION_URI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if(!origin) return callback(null, true);
+    
+    if(allowedOrigins.indexOf(origin) === -1){ //if a specific origin isnt't found on the list allowed origins
+        let message = 'The CORS policy for this application doesn’t allow acces from origin' + origin;
+        return callback(new Error(message ), false);
+    }
+    return callback(null, true);
+  }
+}));
+
 
 app.use(bodyParser.json());
 app.use(morgan('common'));
@@ -31,20 +44,7 @@ app.get('/', (req, res) => {
   res.send('Welcome to myFlix!');
 });
 
-let allowedOrigins = ['http://localhost:8080', 'http://localhost:1234'];
-
-
-app.use(cors({
-  origin: (origin, callback) => {
-    if(!origin) return callback(null, true);
-    if(allowedOrigins.indexOf(origin) === -1){ //if a specific origin isnt't found on the list allowed origins
-        let message = 'The CORS policy for this application doesn’t allow acces from origin' + origin;
-        return callback(new Error(message ), false);
-    }
-    return callback(null, true);
-  }
-}));
-
+const allowedOrigins = ['http://localhost:1234'];
 
 
 
