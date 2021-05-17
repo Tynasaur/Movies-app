@@ -63,14 +63,17 @@ app.get('/movies', (req, res) => {
 
 //GET request for a single movie by name
 app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Movies.findOne({ Title: req.params.Title }),({_id: directorId }),({_id: genreId })
+  Movies.findOne({ Title: req.params.Title }),({_id: directorId }), ({ Director: req.parans.Name}), ({_id: genreId })
     .then((movies) => {
       res.json(movies);
     })
+    
+    .findOne({ _id: directorId })
     .populate('directors')
-    .then(movies => {
-      res.json(movies);
+    .then(directors => {
+      res.json(directors);
     })
+    .findOne({ _id: genreId })
     .populate('genres')
     .then(movies => {
       res.json(movies);
@@ -178,9 +181,9 @@ app.post('/users',
 app.put('/users/:Username',  passport.authenticate('jwt', { session: false }),
 [
   check('Username', 'Username is required').isLength({min:6}),
-  check('Username', 'Username contains characters not allowed.').isAlphanumeric(),
-  check('Password', 'Password is required').not().isEmpty(), //not necessary check what wa supdated and the set it
-  check('Email', 'Email is not valid').isEmail()
+  check('Username', 'Username contains characters not allowed.').isAlphanumeric().optional(),
+  check('Password', 'Password is required').not().isEmpty().optional(), //not necessary check what wa supdated and the set it
+  check('Email', 'Email is not valid').isEmail().optional().normalizeEmail()
   ], (req, res) => {
 
 // check the validation object for errors
@@ -195,8 +198,7 @@ if (!errors.isEmpty()) {
     { $set: {
       Username: req.body.Username,
       Password: hashedPassword, //only set what needs to be
-      Email: req.body.Email,
-      Birthday: req.body.Birthday
+      // Email: req.body.Email,
     }
   },
   { new: true }, // This line makes sure that the updated document is returned
