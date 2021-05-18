@@ -7,7 +7,6 @@ let movieSchema = mongoose.Schema({
     Genre: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Genre' }], 
     Director: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Director' }], //populate
     ImagePath: String,
-    Actors: [],
     Featured: Boolean
 });
 
