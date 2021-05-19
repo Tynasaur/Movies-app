@@ -52,6 +52,8 @@ app.get('/', (req, res) => {
 //GET request for all movies
 app.get('/movies', (req, res) => {
   Movies.find()
+  .populate('Director')
+  .populate('Genre')
     .then((movies) => {
       res.status(200).json(movies);
     })
@@ -64,19 +66,8 @@ app.get('/movies', (req, res) => {
 //GET request for a single movie by name
 app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req, res) => {
   Movies.findOne({ Title: req.params.Title })
-
-  .findOne({ _id: directorId })
-    .populate('directors')
-    .then(movies => {
-      res.json(movies);
-    })
-
-    .findOne({ _id: ObjectId })
-    .populate('genres')
-    .then(movies => {
-      res.json(movies);
-    })
-
+    .populate('Director')
+    .populate('Genre')
     .then((movies) => {
       res.json(movies);
     })
