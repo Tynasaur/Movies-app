@@ -63,21 +63,24 @@ app.get('/movies', (req, res) => {
 
 //GET request for a single movie by name
 app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req, res) => {
-  Movies.findOne({ Title: req.params.Title }),({_id: directorId }), ({ Director: req.parans.Name}), ({_id: genreId })
-    .then((movies) => {
+  Movies.findOne({ Title: req.params.Title })
+
+  .findOne({ _id: directorId })
+    .populate('directors')
+    .then(movies => {
       res.json(movies);
     })
-    
-    .findOne({ _id: directorId })
-    .populate('directors')
-    .then(directors => {
-      res.json(directors);
-    })
+
     .findOne({ _id: genreId })
     .populate('genres')
     .then(movies => {
       res.json(movies);
     })
+
+    .then((movies) => {
+      res.json(movies);
+    })
+    
     .catch((err) => {
       console.error(err);
       res.status(500).send('Error: ' + err);
