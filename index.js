@@ -71,7 +71,7 @@ app.get('/movies/:Title', passport.authenticate('jwt', { session: false }), (req
       res.json(movies);
     })
 
-    .findOne({ _id: genreId })
+    .findOne({ _id: ObjectId })
     .populate('genres')
     .then(movies => {
       res.json(movies);
