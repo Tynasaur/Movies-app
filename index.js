@@ -55,8 +55,15 @@ app.get("/", (req, res) => {
   res.send("Welcome to myFlix!");
 });
 
+
 //requests related to movies
-//GET request for all movies
+/**
+ * Get all movie and movie details
+ * @method GET
+ * @param {string} endpoint - Endpoint to fetch movie details. "url/movies"
+ * @returns {object} - Returns the movie as an object
+ */
+
 app.get("/movies", (req, res) => {
   Movies.find()
     .populate("Director")
@@ -70,7 +77,13 @@ app.get("/movies", (req, res) => {
     });
 });
 
-//GET request for a single movie by name
+/**
+ * Gets specific movie by title
+ * @method GET
+ * @param {string} endpoint - Endpoint to fetch single movie details.
+ * @param {string} Title - movie title required
+ * @returns {object} - Returns movie details as an object
+ */
 app.get(
   "/movies/:Title",
   passport.authenticate("jwt", { session: false }),
@@ -89,7 +102,13 @@ app.get(
   }
 );
 
-//GET request for genres
+/**
+ * Gets genre details from genre collection
+ * @method GET
+ * @param {string} endpoint - Endpoint to fetch genre details.
+ * @param {string} name - genre name required
+ * @returns {object} - Returns genre details as an object.
+ */
 app.get(
   "/genres",
   passport.authenticate("jwt", { session: false }),
@@ -105,6 +124,13 @@ app.get(
   }
 );
 
+/**
+ * Gets genre details for specific genres by movie
+ * @method GET
+ * @param {string} endpoint - Endpoint to fetch genre details.
+ * @param {string} name - genre name required
+ * @returns {object} - Returns genre details as an object.
+ */
 //GET request for genre by name
 app.get(
   "/genres/:Name",
@@ -121,7 +147,12 @@ app.get(
   }
 );
 
-//GET request for directors
+/**
+ * Gets all directors
+ * @method GET
+ * @param {string} endpoint - Endpoint to fetch director collection
+ * @returns {object} - Returns directors as objects
+ */
 app.get(
   "/directors",
   passport.authenticate("jwt", { session: false }),
@@ -137,7 +168,13 @@ app.get(
   }
 );
 
-//GET request for director by name
+/**
+ * Gets specific director by name
+ * @method GET
+ * @param {string} endpoint - Endpoint to fetch single director
+ * @param {string} name - name required
+ * @returns {object} - Returns director details as an object
+ */
 app.get(
   "/directors/:Name",
   passport.authenticate("jwt", { session: false }),
@@ -154,7 +191,13 @@ app.get(
 );
 
 //requests for users
-//POST request to add new users
+/**
+ * Create a new user
+ * @method POST
+ * @param {string} endpoint - endpoint for creating a new user
+ * @param {string} Username, Password, Email, Birthday - required for new user creation
+ * @returns {object} - Creates a new user
+ */
 app.post(
   "/users",
   [
@@ -203,7 +246,12 @@ app.post(
   }
 );
 
-// PUT Update a user's info, by username
+/**
+ * Update user details
+ * @method PUT
+ * @param {string} endpoint - Endpoint to update single user
+ * @param {string} Username - username required
+ */
 app.put(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
@@ -246,7 +294,12 @@ app.put(
   }
 );
 
-// GET all users
+/**
+ * Gets all users
+ * @method GET
+ * @param {string} endpoint - Endpoint to fetch users
+ * @returns {object} - Returns users details as an object
+ */
 app.get(
   "/users",
   passport.authenticate("jwt", { session: false }),
@@ -262,7 +315,13 @@ app.get(
   }
 );
 
-//GET a single user by username
+/**
+ * Gets single user details
+ * @method GET
+ * @param {string} endpoint - Endpoint to fetch single user details.
+ * @param {string} Username - Username required
+ * @returns {object} - Returns user details as an object
+ */
 app.get("/users/:Username", (req, res) => {
   Users.findOne({ Username: req.params.Username })
     .then((user) => {
@@ -274,7 +333,14 @@ app.get("/users/:Username", (req, res) => {
     });
 });
 
-//POST method to add a movie to a user's list of favorites
+/**
+ * Add a movie to users favorites list
+ * @method POST
+ * @param {string} endpoint - Endpoint to add single movie to users favorites list
+ * @param {string} Title - movie title required
+ * @param {string} Username - Username required
+ * @returns {object} - Returns movie details as an object
+ */
 app.post(
   "/users/:Username/:MovieID",
   passport.authenticate("jwt", { session: false }),
@@ -297,7 +363,14 @@ app.post(
   }
 );
 
-//DELETE request to remove movie from users favorite list
+/**
+ * Remove a movie to users favorites list
+ * @method DELETE
+ * @param {string} endpoint - Endpoint to remove single movie to users favorites list
+ * @param {string} Title - movie title required
+ * @param {string} Username - Username required
+ * @returns {object} - Returns movie details as an object
+ */
 app.delete(
   "/users/:Username/:MovieID",
   passport.authenticate("jwt", { session: false }),
@@ -320,7 +393,13 @@ app.delete(
   }
 );
 
-// Delete a user by username
+/**
+ * Delete user profile
+ * @method DELETE
+ * @param {string} endpoint - Endpoint to user profile
+ * @param {string} Username - Username required
+ * @returns {object} - Returns movie details as an object
+ */
 app.delete(
   "/users/:Username",
   passport.authenticate("jwt", { session: false }),
